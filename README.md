@@ -339,4 +339,4 @@ GitHub: [@cristophercervantes](https://github.com/cristophercervantes)
 
 ---
 
-If you want this README saved with a different filename, or edited (shorter, longer, translated, or tailored for PyPI), tell me and I will update it.
+
