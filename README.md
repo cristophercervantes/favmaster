@@ -1,11 +1,12 @@
 # FavMaster 🔍
 
-A powerful and versatile tool for extracting MMH3, SHA256, and MD5 hashes from images, favicons, and URLs. Perfect for security researchers, penetration testers, and developers.
+A powerful tool for extracting MMH3, SHA256, and MD5 hashes from images, favicons, and URLs. Perfect for security researchers, penetration testers, and developers.
 
 [![Version](https://img.shields.io/badge/Version-1.2.0-blue)](https://github.com/cristophercervantes/favmaster)
 [![Go](https://img.shields.io/badge/Go-1.21+-00ADD8)](https://golang.org)
 [![License](https://img.shields.io/badge/License-MIT-green)](LICENSE)
 [![Platform](https://img.shields.io/badge/Platform-Linux%2520%257C%2520Windows%2520%257C%2520macOS-lightgrey)]()
+![CI](https://github.com/cristophercervantes/favmaster/actions/workflows/go.yml/badge.svg)
 
 ---
 
@@ -18,6 +19,7 @@ A powerful and versatile tool for extracting MMH3, SHA256, and MD5 hashes from i
 * 🚀 **High Performance** — Fast, concurrent processing with robust error handling
 * 🔧 **Easy Installation** — Simple `go install` command
 * 🎯 **Smart URL Processing** — Auto-detects domains and finds favicons automatically
+* 🏗️ **CI/CD Built-in** — Automated testing and multi-platform releases
 
 ---
 
@@ -31,22 +33,27 @@ go install github.com/cristophercervantes/favmaster@latest
 
 Make sure `$GOPATH/bin` is in your `PATH` environment variable.
 
+### From Pre-built Binaries
+
+Visit the Releases page to download pre-built binaries for:
+
+* 🐧 Linux (AMD64, ARM64)
+* 🪟 Windows (AMD64)
+*  macOS (AMD64, ARM64)
+
 ### From Source
 
 ```bash
 git clone https://github.com/cristophercervantes/favmaster
 cd favmaster
-go build -o favmaster cmd/favmaster/main.go
-sudo mv favmaster /usr/local/bin/  # Optional: move to PATH
+go build -o favmaster .
+sudo mv favmaster /usr/local/bin/
 ```
 
-### Using Make (Development)
+### Verify Installation
 
 ```bash
-git clone https://github.com/cristophercervantes/favmaster
-cd favmaster
-make build        # Build binary
-make install-local # Install from local source
+favmaster --help
 ```
 
 ---
@@ -86,6 +93,9 @@ favmaster targets.txt
 
 # Process current directory image
 favmaster ./photo.png
+
+# Multiple domains from command line (one by one)
+favmaster google.com && favmaster github.com
 ```
 
 ### Text File Input Format
@@ -93,7 +103,7 @@ favmaster ./photo.png
 Create a text file with one URL or domain per line (comments supported with `#`):
 
 ```
-# Popular websites
+# Popular websites for testing
 google.com
 https://github.com
 http://example.com
@@ -102,23 +112,27 @@ http://example.com
 https://example.com/logo.png
 https://site.com/images/favicon.ico
 
-# Mixed entries
+# Mixed entries - tool auto-detects type
 stackoverflow.com
 assets.example.com/favicon.jpg
+localhost:8080
+
+# Comments are ignored
+# This is a comment line
 ```
 
 ---
 
 ## 🎯 Supported Image Formats
 
-| Format  | Extension   | Description                      |
-| ------- | ----------- | -------------------------------- |
-| Favicon | .ico        | Windows icon format              |
-| PNG     | .png        | Portable Network Graphics        |
-| JPEG    | .jpg, .jpeg | Joint Photographic Experts Group |
-| GIF     | .gif        | Graphics Interchange Format      |
-| SVG     | .svg        | Scalable Vector Graphics         |
-| WebP    | .webp       | Modern web image format          |
+| Format  | Extension   | Common Use        |
+| ------- | ----------- | ----------------- |
+| Favicon | .ico        | Website icons     |
+| PNG     | .png        | Web images, logos |
+| JPEG    | .jpg, .jpeg | Photographs       |
+| GIF     | .gif        | Animations        |
+| SVG     | .svg        | Vector graphics   |
+| WebP    | .webp       | Modern web format |
 
 ---
 
@@ -147,123 +161,168 @@ assets.example.com/favicon.jpg
 
 ## 🔧 Use Cases
 
-* 🛡️ **Security Research**
+### 🛡️ Security Research & Reconnaissance
 
-  * Favicon hashing for Shodan reconnaissance (`http.favicon.hash:-1234567890`)
-  * Asset discovery and fingerprinting
-  * Threat intelligence gathering
+```bash
+# Shodan searches using MMH3 hashes
+favmaster target.com
+# Use output in Shodan: http.favicon.hash:-1234567890
 
-* 🔍 **Digital Forensics**
+# Bulk processing for attack surface mapping
+favmaster target_list.txt
+```
 
-  * File integrity verification
-  * Duplicate image detection
-  * Evidence collection
+### 🔍 Digital Forensics & Incident Response
 
-* 🌐 **Web Development**
+* File integrity verification across multiple systems
+* Duplicate image detection in evidence collection
+* Evidence hashing for chain of custody
 
-  * Favicon-based website identification
-  * Content verification
-  * Cache busting with hash checks
+### 🌐 Web Development & Operations
 
-* ⚡ **Penetration Testing**
+* Favicon-based website identification in logs
+* Content verification after deployments
+* Cache busting with hash-based versioning
 
-  * Target enumeration
-  * Attack surface mapping
-  * Security assessment
+### ⚡ Penetration Testing & Red Teaming
+
+```bash
+# Quick asset discovery
+favmaster company-domain.com
+
+# Bulk target processing
+cat domains.txt | xargs -I {} favmaster {}
+
+# Integration with other tools
+favmaster target.com | grep MMH3 | awk '{print $2}' > hashes.txt
+```
 
 ---
 
 ## 🏗️ Architecture
 
 ```
-FavMaster
-├── Downloader (HTTP client)
-├── Scanner (URL discovery)
-├── Hasher (MMH3, SHA256, MD5)
+FavMaster Core
+├── HTTP Client (Downloader)
+├── URL Scanner & Favicon Discoverer
+├── Hash Calculator (MMH3, SHA256, MD5)
 └── Output Formatter
-```
-
----
-
-## 🛠️ Development
-
-### Building from Source
-
-```bash
-# Clone repository
-git clone https://github.com/cristophercervantes/favmaster
-cd favmaster
-
-# Build
-go build -o favmaster cmd/favmaster
-
-# Test
-go test ./...
-
-# Install locally
-go install ./cmd/favmaster
-```
-
-### Make Commands
-
-```bash
-make build        # Build binary
-make install      # Install using go install
-make test         # Run tests
-make clean        # Clean build artifacts
-make build-all    # Cross-compile for all platforms
-```
-
----
-
-## 🤝 Contributing
-
-We welcome contributions! Please feel free to submit pull requests.
-
-**Suggested workflow**:
-
-1. Fork the repository
-2. Create a feature branch (`git checkout -b feature/amazing-feature`)
-3. Commit your changes (`git commit -m 'Add amazing feature'`)
-4. Push to the branch (`git push origin feature/amazing-feature`)
-5. Open a Pull Request
-
-### Development Setup
-
-```bash
-git clone https://github.com/cristophercervantes/favmaster
-cd favmaster
-go mod tidy
-make test
 ```
 
 ---
 
 ## 🐛 Troubleshooting
 
-**Common Issues**
+### Common Issues & Solutions
 
-* `command not found: favmaster`
+**"command not found: favmaster"**
 
 ```bash
 # Add GOPATH to your PATH
 export PATH=$PATH:$(go env GOPATH)/bin
-# Add to your ~/.bashrc or ~/.zshrc for persistence
+
+# Make it permanent (add to ~/.bashrc, ~/.zshrc, or ~/.profile)
+echo 'export PATH=$PATH:$(go env GOPATH)/bin' >> ~/.bashrc
+source ~/.bashrc
+
+# Verify Go environment
+go env GOPATH
 ```
 
-* `go: cannot find main module`
+**Network Timeouts or Connection Issues**
 
 ```bash
-# Make sure you're in the project directory
+# The tool has 30-second timeouts with retry logic
+# Check your internet connection and firewall settings
+
+# For corporate environments, you might need to set proxies
+export HTTP_PROXY=http://your-proxy:port
+export HTTPS_PROXY=http://your-proxy:port
+```
+
+**Permission Issues**
+
+```bash
+# If you can't move the binary to /usr/local/bin
+sudo mv favmaster /usr/local/bin/
+
+# Or install to a user directory
+mkdir -p ~/.local/bin
+mv favmaster ~/.local/bin/
+export PATH=$PATH:~/.local/bin
+```
+
+**Go Version Compatibility**
+
+```bash
+# Check your Go version
+go version
+
+# Update Go if needed (requires 1.21+)
+# Visit: https://golang.org/dl/
+```
+
+---
+
+## 🤝 Contributing
+
+We love contributions! Here's how to get started:
+
+### Development Setup
+
+```bash
+# Fork and clone
+git clone https://github.com/cristophercervantes/favmaster
 cd favmaster
+
+# Build and test
+go build -o favmaster .
+./favmaster google.com  # Test functionality
+
+# Run basic validation
+go test -v .
 ```
 
-* **Network Timeouts**
+### Contribution Workflow
+
+* Fork the repository
+* Create a feature branch (`git checkout -b feature/amazing-feature`)
+* Commit your changes (`git commit -m 'Add amazing feature'`)
+* Push to the branch (`git push origin feature/amazing-feature`)
+* Open a Pull Request
+
+### Areas for Contribution
+
+* 🆕 New hash algorithms
+* 🌐 Additional protocol support
+* 📊 Enhanced output formats (JSON, CSV)
+* 🔧 Performance optimizations
+* 🐛 Bug fixes and documentation
+
+---
+
+## 🛠️ API Reference
+
+### Command Line Options
 
 ```bash
-# The tool includes retry logic, but you can adjust timeouts in the code
-# Modify internal/downloader/downloader.go for custom timeouts
+favmaster <input>  # Process URL, domain, file, or text file
 ```
+
+### Input Types
+
+* **Domain:** `example.com` (auto-discovers favicon)
+* **URL:** `https://example.com/favicon.ico` (direct access)
+* **File:** `image.png` (local file processing)
+* **Text File:** `urls.txt` (batch processing)
+
+### Exit Codes
+
+* `0`: Success
+* `1`: General error
+* `2`: Invalid arguments
+* `3`: Network error
+* `4`: File system error
 
 ---
 
@@ -275,8 +334,20 @@ This project is licensed under the MIT License - see the `LICENSE` file for deta
 
 ## 👨‍💻 Author
 
-**Cristopher**
+Cristopher
+
 GitHub: [@cristophercervantes](https://github.com/cristophercervantes)
+
+Tool: FavMaster
+
+---
+
+## 🙏 Acknowledgments
+
+* Go Community - For excellent libraries and tools
+* Shodan - For popularizing favicon hashing techniques
+* Security Researchers - For inspiration and use cases
+* Contributors - For improvements and bug reports
 
 ---
 
@@ -284,6 +355,15 @@ GitHub: [@cristophercervantes](https://github.com/cristophercervantes)
 
 If you find this tool useful, please give it a star on GitHub!
 
-**Pro Tip:** Use with Shodan for powerful reconnaissance: `http.favicon.hash:YOUR_MMH3_HASH`
+### Pro Tip for Security Researchers:
+
+```bash
+# Combine with Shodan for powerful reconnaissance
+favmaster target.com | grep MMH3 | awk '{print "http.favicon.hash:" $2}' | shodan search --fields ip_str,port,org -
+```
 
 Happy Hashing! 🔍✨
+
+**FavMaster - Because every favicon tells a story**
+
+Release page: [https://github.com/cristophercervantes/favmaster/releases/](https://github.com/cristophercervantes/favmaster/releases/)
