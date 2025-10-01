@@ -1,0 +1,8 @@
+github.com/PuerkitoBio/goquery v1.9.1 h1:6Tf9Em5S0aDf2AmrE1WqI5wWyJO1wfHjqU9p5r9cLbU=
+github.com/PuerkitoBio/goquery v1.9.1/go.mod h1:y/RQdDDy4c5E90dCmTkZZgjwYcO6EG2YwV8CYVbOXwo=
+github.com/andybalholm/cascadia v1.3.2 h1:vuRC1E2XqB5XPVoidM1b3G6shhZy0g9mibSa3P/wh1I=
+github.com/andybalholm/cascadia v1.3.2/go.mod h1:YUiEXHLM1P8g8qYLp48K0V1qgXbkJ2NVMC1pNBw+BJQ=
+github.com/tj/go-murmur v0.0.0-20191126233630-28e7e0bedc10 h1:lzqZ3F9hLb3+9hjpW8Mx0O6Ck6x5p8XQN0Y4FJ8Wb5s=
+github.com/tj/go-murmur v0.0.0-20191126233630-28e7e0bedc10/go.mod h1:2SyHxVpCkKjJ1fVzK9vqjfTp0qGxY9Gx8nJ8LJ0yL9M=
+golang.org/x/net v0.21.0 h1:AQyQV4dYCvJ7vGmJyKki9+PBdyvhkSd8EIx/qb0AYv4=
+golang.org/x/net v0.21.0/go.mod h1:bd6JxQ5PQRyWS1sQDFX2HOJYQm/2hH1WQ5nVZYJ9o1k=
