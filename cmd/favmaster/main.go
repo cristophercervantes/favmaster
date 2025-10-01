@@ -14,15 +14,15 @@ import (
 	"path/filepath"
 	"strings"
 	"time"
+	"unsafe"
 
 	"github.com/PuerkitoBio/goquery"
-	"github.com/spaolacci/murmur3"
 )
 
 const (
 	ToolName    = "favmaster"
 	Developer   = "Cristopher"
-	Version     = "1.2.1"
+	Version     = "1.2.2"
 )
 
 var (
@@ -47,6 +47,63 @@ var (
 		"/apple-touch-icon.png",
 	}
 )
+
+// MurmurHash3 implementation (32-bit version)
+func murmurHash3(data []byte, seed uint32) uint32 {
+	const (
+		c1 uint32 = 0xcc9e2d51
+		c2 uint32 = 0x1b873593
+		r1 uint32 = 15
+		r2 uint32 = 13
+		m  uint32 = 5
+		n  uint32 = 0xe6546b64
+	)
+
+	h := seed
+	length := len(data)
+	roundedEnd := (length / 4) * 4
+
+	for i := 0; i < roundedEnd; i += 4 {
+		k := *(*uint32)(unsafe.Pointer(&data[i]))
+		k *= c1
+		k = (k << r1) | (k >> (32 - r1))
+		k *= c2
+
+		h ^= k
+		h = (h << r2) | (h >> (32 - r2))
+		h = h*m + n
+	}
+
+	var k uint32
+	switch length - roundedEnd {
+	case 3:
+		k ^= uint32(data[roundedEnd+2]) << 16
+		fallthrough
+	case 2:
+		k ^= uint32(data[roundedEnd+1]) << 8
+		fallthrough
+	case 1:
+		k ^= uint32(data[roundedEnd])
+		k *= c1
+		k = (k << r1) | (k >> (32 - r1))
+		k *= c2
+		h ^= k
+	}
+
+	h ^= uint32(length)
+	h ^= h >> 16
+	h *= 0x85ebca6b
+	h ^= h >> 13
+	h *= 0xc2b2ae35
+	h ^= h >> 16
+
+	return h
+}
+
+// Safe MurmurHash3 that converts to int32 (for Shodan compatibility)
+func mmh3Hash32(data []byte) int32 {
+	return int32(murmurHash3(data, 0))
+}
 
 func main() {
 	if len(os.Args) < 2 {
@@ -304,10 +361,8 @@ func getContentType(url string) string {
 }
 
 func calculateAndDisplayHashes(data []byte, source string) {
-	// Calculate MurmurHash3 (mmh3) - using the more reliable library
-	hasher := murmur3.New32()
-	hasher.Write(data)
-	mmh3Hash := hasher.Sum32()
+	// Calculate MurmurHash3 (mmh3) - using our own implementation
+	mmh3Hash := mmh3Hash32(data)
 	
 	// Calculate SHA256
 	sha256Hash := sha256.Sum256(data)
@@ -320,7 +375,7 @@ func calculateAndDisplayHashes(data []byte, source string) {
 	fmt.Printf("│ Source: %-30s │\n", truncateString(source, 30))
 	fmt.Printf("│ Size:   %-30d │\n", len(data))
 	fmt.Println("├─────────────────────────────────────────┤")
-	fmt.Printf("│ MMH3:   %-32d │\n", int32(mmh3Hash)) // Convert to int32 for consistent output
+	fmt.Printf("│ MMH3:   %-32d │\n", mmh3Hash)
 	fmt.Printf("│ SHA256: %-32s │\n", truncateString(hex.EncodeToString(sha256Hash[:]), 32))
 	fmt.Printf("│ MD5:    %-32s │\n", truncateString(hex.EncodeToString(md5Hash[:]), 32))
 	fmt.Println("└─────────────────────────────────────────┘")
