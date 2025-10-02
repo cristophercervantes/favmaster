@@ -4,15 +4,23 @@ import mmh3
 def murmurhash3_x86_32(data, seed=0):
     """
     Calculate MurmurHash3 (32-bit) for the given data.
-    Using mmh3 library which is the standard for Python.
+    Returns unsigned integer (compatible with Shodan).
     """
-    return mmh3.hash(data, seed)
+    hash_signed = mmh3.hash(data, seed)
+    
+    # Convert signed to unsigned for Shodan compatibility
+    if hash_signed < 0:
+        hash_unsigned = hash_signed + 2**32
+    else:
+        hash_unsigned = hash_signed
+    
+    return hash_unsigned
 
 def calculate_hashes(data):
     """
     Calculate MMH3, SHA256, and MD5 hashes for the given data.
     """
-    # Calculate MurmurHash3 (mmh3)
+    # Calculate MurmurHash3 (mmh3) - unsigned for Shodan
     mmh3_hash = murmurhash3_x86_32(data)
     
     # Calculate SHA256
