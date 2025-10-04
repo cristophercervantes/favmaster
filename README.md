@@ -3,8 +3,8 @@
 [![Python](https://img.shields.io/badge/python-3.6%2B-blue.svg)](https://www.python.org/downloads/)
 [![Platform](https://img.shields.io/badge/platform-linux%20%7C%20macos%20%7C%20windows-lightgrey)]()
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
-[![GitHub issues](https://img.shields.io/github/issues/yourusername/favmaster)](https://github.com/yourusername/favmaster/issues)
-[![GitHub stars](https://img.shields.io/github/stars/yourusername/favmaster?style=social)](https://github.com/yourusername/favmaster/stargazers)
+[![GitHub issues](https://img.shields.io/github/issues/yourusername/favmaster)](https://github.com/cristophercervantes/favmaster/issues)
+[![GitHub stars](https://img.shields.io/github/stars/yourusername/favmaster?style=social)](https://github.com/cristophercervantes/favmaster/stargazers)
 
 ## FavMaster is a command-line tool to compute hashes from website
 favicons. It supports:
