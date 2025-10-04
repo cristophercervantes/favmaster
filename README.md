@@ -1,342 +1,172 @@
-# FavMaster 🔍
+FavMaster
+FavMaster is a command-line tool to compute hashes from website favicons. It supports:
 
-![Python 3.7+](https://img.shields.io/badge/Python-3.7+-blue)
-![License MIT](https://img.shields.io/badge/License-MIT-green)
-![Status Ready for PyPI](https://img.shields.io/badge/Status-Ready_for_PyPI-orange)
+MMH3 (Shodan/FOFA/Censys/CriminalIP-compatible, using base64-encoded data with newlines)
+MD5
+SHA256
 
-A powerful, feature-rich Python tool for extracting MMH3, SHA256, and MD5 hashes from images, favicons, and URLs. Perfect for security researchers, penetration testers, and developers.
+You can provide either a root URL (e.g., https://example.com) to automatically discover and download the favicon, or a local favicon file (e.g., .ico, .png, .jpg, .jpeg, .webp, .svg).
+Creator: Cristopher
+Features
 
-## ✨ Features
+URL Mode: Automatically discovers favicon URLs by parsing <link rel="icon"> tags or falling back to /favicon.ico.
+File Mode: Reads local favicon files in various formats (.ico, .png, .jpg, .jpeg, .webp, .svg, or any binary file).
+Hashes:
+MMH3: Shodan-compatible (base64-encoded favicon data, including newlines, then hashed with MurmurHash3).
+MD5 and SHA256: Computed on raw favicon bytes.
 
-* **Automatic Favicon Discovery** — Intelligently finds favicons from domains.
-* **Multi-Format Support** — PNG, JPG, JPEG, GIF, SVG, WEBP, ICO.
-* **Flexible Input Sources** — URLs, domains, text files, or local files.
-* **Multiple Hash Algorithms** — MMH3, SHA256, and MD5 calculations.
-* **High Performance** — Fast, concurrent processing with robust error handling.
-* **Easy Installation** — Multiple installation options (pipx / pip / local / dev).
-* **Smart URL Processing** — Auto-detects domains and finds favicons automatically.
-* **Bulk Processing** — Process multiple targets from text files.
-* **Security Focused** — Built for security professionals and researchers.
 
----
+Installable: Available via pip or pipx from GitHub for easy global access.
+Cross-Platform: Works on Windows, macOS, and Linux.
 
-## 🚀 Installation
+Installation
+FavMaster can be installed directly from GitHub using pip or pipx. The latter is recommended for CLI tools to keep dependencies isolated.
+Prerequisites
 
-**Method 1: Install from GitHub using pipx (Recommended - Isolated Environment)**
+Python 3.6 or higher
+pip or pipx installed
+Ensure your Python bin directory is in your system PATH (e.g., ~/.local/bin on Linux/macOS or Scripts in your Python install on Windows).
 
-```bash
-pipx install git+https://github.com/cristophercervantes/favmaster.git
-```
+Install via pip
+pip install git+https://github.com/yourusername/favmaster.git
 
-**Method 2: Install from GitHub using pip**
+Install via pipx (recommended for CLI tools)
+pipx install git+https://github.com/yourusername/favmaster.git
 
-```bash
-pip install git+https://github.com/cristophercervantes/favmaster.git
-```
+Local Installation (for development)
 
-**Method 3: Install from Local Source**
-
-```bash
-# Clone the repository
-git clone https://github.com/cristophercervantes/favmaster
+Clone the repository:
+git clone https://github.com/yourusername/favmaster.git
 cd favmaster
 
-# Install using pip
+
+Install locally:
 pip install .
 
-# Or install using pipx (isolated environment)
-pipx install .
-```
 
-**Method 4: Development Installation**
 
-```bash
-git clone https://github.com/cristophercervantes/favmaster
-cd favmaster
-pip install -e .  # Editable mode for development
-```
+Usage
+Run the tool using the favmaster command, followed by either a URL or a file path.
+Syntax
+favmaster <input>
 
-### 🔧 Prerequisites
 
-Install `pipx` (if you don't have it)
+<input>: Either a root URL (e.g., https://example.com) or a local file path (e.g., ./favicon.ico).
 
-```bash
-# On Linux/macOS
-python3 -m pip install --user pipx
-python3 -m pipx ensurepath
+Examples
 
-# On Windows
-py -m pip install --user pipx
-py -m pipx ensurepath
+Hash a favicon from a URL:
+favmaster https://example.com
 
-# Restart your terminal after installation
-```
+Output:
+   ______              ___  ____          
+  |  ____|            |__ \|___ \         
+  | |__ __ ___   ____  __) | __) | ___ 
+  |  __| '_ ` _ \ / __||__ <|__ < / __|
+  | |  | | | | | | (__ ___) |__) | (__ 
+  | |_|  |_| |_| |_| \___|____/____/ \___|
 
-**Why Choose pipx?**
+  FavMaster – MMH3 (Shodan/FOFA/Censys/CriminalIP), MD5, SHA256
+  Creator: Cristopher
 
-* No dependency conflicts with other Python packages
-* Global command — `favmaster` available everywhere
-* Easy updates — `pipx upgrade favmaster`
-* Clean removal — `pipx uninstall favmaster`
-* Security — Runs in isolated environment
+[+] Discovered favicon URL: https://example.com/favicon.ico
 
----
+Hashes
+----------------------------------------
+MMH3 (Shodan/FOFA/Censys/CriminalIP): -1370005593
+MD5: d41d8cd98f00b204e9800998ecf8427e
+SHA256: e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855
 
-## 📖 Quick Start
 
-### Basic Usage
+Hash a local favicon file:
+favmaster ./myfavicon.ico
 
-```bash
-# Process a domain (auto-find favicon)
-favmaster google.com
+Output:
+   ______              ___  ____          
+  |  ____|            |__ \|___ \         
+  | |__ __ ___   ____  __) | __) | ___ 
+  |  __| '_ ` _ \ / __||__ <|__ < / __|
+  | |  | | | | | | (__ ___) |__) | (__ 
+  | |_|  |_| |_| |_| \___|____/____/ \___|
 
-# Process specific image URL
-favmaster https://example.com/logo.png
+  FavMaster – MMH3 (Shodan/FOFA/Censys/CriminalIP), MD5, SHA256
+  Creator: Cristopher
 
-# Process from text file with URLs
-favmaster urls.txt
+[+] Reading local file: ./myfavicon.ico
 
-# Process local image file
-favmaster image.jpg
+Hashes
+----------------------------------------
+MMH3 (Shodan/FOFA/Censys/CriminalIP): -1370005593
+MD5: d41d8cd98f00b204e9800998ecf8427e
+SHA256: e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855
 
-# Direct favicon URL
-favmaster https://github.com/favicon.ico
-```
 
-### Advanced Usage
 
-```bash
-# Domain without protocol (auto-adds https://)
-favmaster example.com
+Supported File Formats
 
-# HTTP URL
-favmaster http://example.com/favicon.ico
+.ico
+.png
+.jpg/.jpeg
+.webp
+.svg
+Any binary file (hashes raw bytes)
 
-# Mixed input file with comments
-favmaster targets.txt
+Dependencies
+Listed in requirements.txt:
 
-# Process current directory image
-favmaster ./photo.png
-```
+requests>=2.28.0: For downloading favicons from URLs.
+beautifulsoup4>=4.11.0: For parsing HTML to find favicon URLs.
+mmh3>=4.0.0: For computing MurmurHash3 (MMH3).
 
----
+These are automatically installed during setup.
+How It Works
 
-## 🎯 Supported Image Formats
+URL Mode:
 
-|  Format | Extension   | Common Use                     |
-| ------: | ----------- | ------------------------------ |
-| Favicon | .ico        | Website icons                  |
-|     PNG | .png        | Web images, logos, screenshots |
-|    JPEG | .jpg, .jpeg | Photographs, complex images    |
-|     GIF | .gif        | Animations, simple graphics    |
-|     SVG | .svg        | Vector graphics, logos         |
-|    WebP | .webp       | Modern web format, optimized   |
+If the input starts with http:// or https://, FavMaster:
+Fetches the root URL.
+Parses HTML for <link rel="icon"> (or similar, case-insensitive).
+Falls back to /favicon.ico if no link is found.
+Downloads the favicon.
 
----
 
-## 📊 Output Example
 
-```
-╔═══════════════════════════════════════╗
-║              FAVMASTER                ║
-║            v1.0.0 by Cristopher       ║
-╚═══════════════════════════════════════╝
 
-🌐 Processing domain: google.com
-   Searching for favicon...
-   Trying: https://google.com/favicon.ico
-┌─────────────────────────────────────────┐
-│ Source: https://google.com/favicon.ico  │
-│ Size:   15486                           │
-├─────────────────────────────────────────┤
-│ MMH3:   -1234567890                     │
-│ SHA256: e3b0c44298fc1c149afbf4c8996...  │
-│ MD5:    d41d8cd98f00b204e9800998ec...   │
-└─────────────────────────────────────────┘
-```
+File Mode:
 
----
+If the input is a file path, FavMaster reads the file directly.
 
-## 📁 Input File Format
 
-Create a text file with one URL or domain per line (comments supported with `#`):
+Hashing:
 
-```
-# Popular websites for reconnaissance
-google.com
-https://github.com
-http://example.com
+MD5 and SHA256: Computed on raw favicon bytes.
+MMH3: Base64-encodes the favicon (with newlines, per Shodan/FOFA/Censys/CriminalIP convention), then applies MurmurHash3.
 
-# Specific image URLs
-https://example.com/logo.png
-https://site.com/images/favicon.ico
 
-# Mixed entries - tool auto-detects type
-stackoverflow.com
-assets.example.com/favicon.jpg
-localhost:8080
+Output: Displays the hashes in a clean format with a banner.
 
-# Comments are ignored
-# This line won't be processed
-```
 
----
+Troubleshooting
 
-## 🔧 Use Cases
+Command not found: Ensure your Python bin directory is in your PATH:
+Linux/macOS: export PATH=$PATH:~/.local/bin
+Windows: Add C:\Path\To\Python\Scripts to your system PATH.
 
-### 🛡️ Security Research & Reconnaissance
 
-```bash
-# Shodan searches using MMH3 hashes
-favmaster target.com
-# Use output in Shodan: http.favicon.hash:-1234567890
+Network errors: Check your internet connection or the URL's validity.
+File not found: Verify the file path is correct and the file exists.
 
-# Bulk processing for attack surface mapping
-favmaster target_list.txt
+Contributing
+Contributions are welcome! To contribute:
 
-# Integration with other security tools
-favmaster company.com | grep MMH3 | awk '{print $3}' > hashes.txt
-```
+Fork the repository.
+Create a new branch: git checkout -b feature/your-feature.
+Make changes and commit: git commit -m "Add your feature".
+Push to your fork: git push origin feature/your-feature.
+Open a pull request.
 
-### 🔍 Digital Forensics & Incident Response
-
-* File integrity verification across multiple systems
-* Duplicate image detection in evidence collection
-* Evidence hashing for chain of custody
-* Malware analysis — hash known malicious images
-
-### 🌐 Web Development & Operations
-
-* Favicon-based website identification in logs
-* Content verification after deployments
-* Cache busting with hash-based versioning
-* Asset management and tracking
-
-### ⚡ Penetration Testing & Red Teaming
-
-```bash
-# Quick asset discovery during engagements
-favmaster target-company.com
-
-# Bulk target processing for large scopes
-cat domains.txt | xargs -I {} favmaster {}
-
-# Integration with reconnaissance pipelines
-subfinder -d target.com | favmaster
-```
-
----
-
-## 🛠️ Advanced Usage
-
-### Integration with Other Tools
-
-```bash
-# Combine with subdomain enumeration
-subfinder -d example.com | favmaster
-
-# Process results from asset discovery tools
-assetfinder example.com | favmaster
-
-# Use with parallel processing for large datasets
-cat large_domain_list.txt | parallel -j 10 favmaster
-```
-
----
-
-## 🐛 Troubleshooting
-
-**Common Issues & Solutions**
-
-* `"Command not found: favmaster"`
-
-```bash
-# If using pipx, ensure it's in PATH
-pipx ensurepath
-
-# If using pip, ensure Python scripts are in PATH
-export PATH=$PATH:$(python -m site --user-base)/bin
-
-# Or use Python module directly
-python -m favmaster.cli google.com
-```
-
-* `pipx not found`
-
-```bash
-# Install pipx first
-python3 -m pip install --user pipx
-python3 -m pipx ensurepath
-source ~/.bashrc  # or restart terminal
-```
-
-* **Network Timeouts**
-
-```bash
-# The tool includes 30-second timeouts with retry logic
-# Check your internet connection and firewall settings
-
-# For corporate environments, set proxies
-export HTTP_PROXY=http://your-proxy:port
-export HTTPS_PROXY=http://your-proxy:port
-```
-
----
-
-## 🔄 Updating
-
-**Update with pipx**
-
-```bash
-pipx upgrade favmaster
-```
-
-**Update with pip**
-
-```bash
-pip install --upgrade git+https://github.com/cristophercervantes/favmaster.git
-```
-
----
-
-## 🤝 Contributing
-
-We welcome contributions! Here's how to get started:
-
-**Development Setup**
-
-```bash
-# Fork and clone
-git clone https://github.com/cristophercervantes/favmaster
-cd favmaster
-
-# Install in development mode
-pip install -e .
-
-# Make your changes and test
-```
-
-**Pull Request Process**
-
-1. Fork the repository
-2. Create a feature branch
-3. Commit your changes
-4. Push to the branch
-5. Open a Pull Request
-
----
-
-## 📄 License
-
-MIT License — see LICENSE file for details.
-
----
-
-## 👨‍💻 Author
-
-Cristopher
-GitHub: [@cristophercervantes](https://github.com/cristophercervantes)
-
----
-
-
+Please include tests and update documentation as needed.
+License
+MIT License. See LICENSE file (you can add one to the repository).
+Contact
+For issues or feature requests, open a GitHub issue or contact Cristopher via GitHub.
